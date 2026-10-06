@@ -5,7 +5,7 @@ from ExpeditionApp.models import Expedition
 
 # Create your models here.
 class Offre(models.Model):
-    prix=models.DecimalField(max_digits=10,decimal_places=2)
+    prix=models.DecimalField(max_digits=10,decimal_places=3)
     delai_jours=models.PositiveBigIntegerField()
     statut=models.CharField(max_length=100,choices=[
         ('p','propose'), 
