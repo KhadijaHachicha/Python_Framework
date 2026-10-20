@@ -1,59 +1,45 @@
 from django.db import models
-from django.core.validators import MaxLengthValidator, MinValueValidator
+from EntrepriseApp.models import Entreprise
+from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
+
+CAPACITES_VEHICULE = {
+    'camionnette': (1, 1500),
+    'fourgon': (1, 3500),
+    'camion_porteur': (3500, 19000),
+    'semi_remorque': (19000, 26000),
+}
+
+
 # Create your models here.
-class vehicules(models.Model):
-    immatriculation = models.CharField(max_length=20,unique=True)
-    capacite_kg = models.PositiveIntegerField(validators=[
-        MinValueValidator(1,"La capacite ne peut pas etre negative"),
-    ])
-    entreprise = models.ForeignKey('EntrepriseApp.Enterprise',on_delete=models.CASCADE,related_name='vehicules')
+class Vehicule(models.Model):
+    immatriculation = models.CharField(max_length=50, unique=True)
+    type_vehicule = models.CharField(
+        max_length=100,
+        choices=[
+            ('camionnette', 'Camionnette / utilitaire léger'),
+            ('camion_porteur', 'Camion porteur'),
+            ('semi_remorque', 'Semi-remorque'),
+            ('fourgon', 'Fourgon'),
+        ],
+    )
+    capacite_kg = models.PositiveIntegerField(
+        validators=[MinValueValidator(1, "la valeur doit etre strictement possitive")]
+    )
+    disponible = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    disponible = models.BooleanField(default=True)
-    type_vehicule = models.CharField(max_length=20,choices=[])
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE, related_name='vehicules')
+
     def clean(self):
-        if self.entreprise_id and self.entreprise.type_entreprise != 'transporteur':
-            raise ValidationError(({
-                'entreprise : un vehicule ne peut etre cree que par un transporteur'
-            }))
-
-        if self.vehicule_id and self.statut == 'proposee':
-            if not self.vehicule.disponible:
+        super().clean()
+        if self.type_vehicule in CAPACITES_VEHICULE and self.capacite_kg is not None:
+            minimum, maximum = CAPACITES_VEHICULE[self.type_vehicule]
+            if not minimum <= self.capacite_kg <= maximum:
                 raise ValidationError({
-                    'vehicule': "Ce véhicule n'est pas disponible."
+                    'capacite_kg': f"La capacite doit etre entre {minimum} et {maximum} kg pour ce type de vehicule."
                 })
 
-        if self.vehicule_id and self.expedition_id:
-            capacites = {
-                'camionnette': 1.5,
-                'fourgon': 3.5,
-                'camion_porteur': 19,
-                'semi_remorque': 26,
-            }
-
-            type_vehicule = self.vehicule.type_vehicule
-            poids = self.expedition.poids
-
-            capacite_max = capacites.get(type_vehicule)
-
-            if capacite_max is None:
-                raise ValidationError({
-                    'vehicule': "Le type de véhicule est inconnu."
-                })
-
-            if poids is None or poids <= 0:
-                raise ValidationError({
-                    'expedition': "Le poids doit être strictement positif."
-                })
-
-            if poids > capacite_max:
-                raise ValidationError({
-                    'vehicule': (
-                        f"Le véhicule de type '{type_vehicule}' "
-                        f"ne peut pas transporter {poids} tonnes. "
-                        f"Capacité maximale indicative : "
-                        f"{capacite_max} tonnes."
-                    )
-                })
-            
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)

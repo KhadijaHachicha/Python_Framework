@@ -1,48 +1,57 @@
 from django.db import models
-from django.core.validators import     MinValueValidator
-from django.utils import timezone
+from EntrepriseApp.models import Entreprise
+from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+
 # Create your models here.
-class expedition(models.Model):
-    entreprise = models.ForeignKey('EntrepriseApp.Enterprise',on_delete=models.CASCADE,related_name='expeditions')
-    reference = models.CharField(max_length=20,unique=True,auto_created=True)
-    ville_depart = models.CharField(max_length=100)
-    ville_arrivee = models.CharField(max_length=100)
-    poids_kg = models.FloatField(validators=[
-        MinValueValidator(1,"Le poids ne peut pas etre negative")
-    ])
+class Expedition(models.Model):
+    reference = models.CharField(max_length=50, unique=True)
+    ville_depart = models.CharField(max_length=80)
+    ville_arrive = models.CharField(max_length=80)
+    poids_kg = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0, "le poids doit etre possitive")],
+    )
     date_souhaitee = models.DateTimeField()
     description = models.TextField()
-    status = models.CharField(max_length=20,choices=[
-        ('p','publiee'),
-        ('a','attribuee'),
-        ('ec','en_cours'),
-        ('l','livree'),
-        ('an','annulee')
-    ],default='publiee')
+    statut = models.CharField(
+        max_length=100,
+        choices=[
+            ('en_attente', 'En attente'),
+            ('publiee', 'Publiée'),
+            ('attribuee', 'Attribuée'),
+            ('terminee', 'Terminée'),
+            ('annulee', 'Annulée'),
+        ],
+        default='en_attente',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE, related_name='expeditions')
+
     def clean(self):
-        super().clean() #S'il y a une validataion de deux valeurs ou plus on doit appeler la methode clean de la classe parent
-        if self.entreprise_id and self.entreprise.type_entreprise != 'chargeur':
-            raise ValidationError(({
-                'entreprise : une expedition ne peut etre cree que par un chargeur'
-            }))
+        super().clean()
+        if self.entreprise_id and self.entreprise.type_entreprise != 'c':
+            raise ValidationError({"entreprise": "une expedition ne peut pas etre cree que par un chargeur"})
+
     @classmethod
     def _generate_reference(cls):
-        annee = timezone.now().strftime("%y")
-        prefix = f"EXP_{annee}"
+        anne = timezone.now().strftime('%y')
+        prefix = f"EXP_{anne}_"
         dernier = (
-            cls.objects.filter(reference_startswith=prefix) # Note 1 : <==>  SELECT * FROM expedition
-            .order_by("-reference") # Note 2 using - it will order by reference desc
-            .first()
+            cls.objects.filter(reference__startswith=prefix)
+            .order_by('reference')
+            .last()
         )
         compteur = int(dernier.reference[-5:]) + 1 if dernier else 1
         if compteur > 99999:
-            raise ValueError("Limit Exceed")
+            raise ValueError("Le compteur a dépassé la limite de 5 chiffres.")
         return f"{prefix}{compteur:05d}"
-    def save(self,*args,**kwargs):
+
+    def save(self, *args, **kwargs):
         if not self.reference:
             self.reference = self._generate_reference()
-        self.full_clean()  # fonction pour valiser tous les validateurs
-        super().save(*args,**kwargs)
+        self.full_clean()
+        super().save(*args, **kwargs)
