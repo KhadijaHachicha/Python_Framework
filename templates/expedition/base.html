@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestion des Expéditions{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'expedition/css/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <a class="brand" href="{% url 'Expedition:liste_classe' %}">
+            <span></span> ExpeditionApp
+        </a>
+        <ul class="nav-links">
+            <li><a href="{% url 'Expedition:liste_classe' %}">Toutes les expéditions</a></li>
+            <li><a href="{% url 'Expedition:list_expeditions' %}">Expéditions publiées</a></li>
+            <li><a href="{% url 'Expedition:create_expedition' %}">+ Nouvelle expédition</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
+

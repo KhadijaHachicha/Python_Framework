@@ -1,0 +1,23 @@
+{% extends 'expedition/base.html' %}
+
+{% block title %}Delete Expedition{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 550px; margin: 2rem auto; border-top: 4px solid var(--danger);">
+    <div class="card-header">
+        <h1 class="card-title" style="color: var(--danger);">Delete Expedition</h1>
+    </div>
+
+    <p style="margin-bottom: 1.5rem; font-size: 1.05rem;">
+        Are you sure you want to delete the expedition "<strong>{{ expedition.reference }}</strong>"?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'Expedition:liste_classe' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

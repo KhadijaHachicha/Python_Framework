@@ -1,0 +1,21 @@
+{% extends 'expedition/base.html' %}
+
+{% block title %}{% if object %}Modifier l'expédition{% else %}Créer une expédition{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 680px; margin: 0 auto;">
+    <div class="card-header">
+        <h1 class="card-title">{% if object %}Modifier l'expédition {{ object.reference }}{% else %}Créer une nouvelle expédition{% endif %}</h1>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'Expedition:liste_classe' %}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

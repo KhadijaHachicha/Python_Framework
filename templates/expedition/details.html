@@ -1,3 +1,50 @@
-{{expedition.reference}} - {{expedition.entreprise}} - {{expedition.ville_depart}} - {{expedition.ville_arrive}} - {{expedition.statut}}
+{% extends 'expedition/base.html' %}
 
-<a href="{% url 'expedition:list' %}">Back to list </a>
+{% block title %}Expedition Details - {{ expedition.reference }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Expedition Details</h1>
+        <span class="badge badge-{{ expedition.statut }}">{{ expedition.statut }}</span>
+    </div>
+
+    <div class="details-grid">
+        <div class="detail-item">
+            <div class="detail-label">Reference</div>
+            <div class="detail-value">{{ expedition.reference }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Departure City</div>
+            <div class="detail-value">{{ expedition.ville_depart }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Arrival City</div>
+            <div class="detail-value">{{ expedition.ville_arrive }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Weight (kg)</div>
+            <div class="detail-value">{{ expedition.poids_kg }} kg</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Desired Date</div>
+            <div class="detail-value">{{ expedition.date_souhaitee }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Company</div>
+            <div class="detail-value">{{ expedition.entreprise }}</div>
+        </div>
+    </div>
+
+    <div class="detail-item" style="margin-bottom: 1.5rem;">
+        <div class="detail-label">Description</div>
+        <div class="detail-value" style="font-size: 0.95rem; white-space: pre-line;">{{ expedition.description }}</div>
+    </div>
+
+    <div class="form-actions">
+        <a class="btn btn-primary" href="{% url 'Expedition:update_expedition' pk=expedition.id %}">Edit Expedition</a>
+        <a class="btn btn-danger" href="{% url 'Expedition:delete_expedition' pk=expedition.id %}">Delete Expedition</a>
+        <a class="btn btn-secondary" href="{% url 'Expedition:list_expeditions' %}">Back to List</a>
+    </div>
+</div>
+{% endblock %}
