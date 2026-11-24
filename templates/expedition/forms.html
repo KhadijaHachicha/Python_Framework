@@ -1,4 +1,4 @@
-{% extends 'expedition/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}{% if object %}Modifier l'expédition{% else %}Créer une expédition{% endif %}{% endblock %}
 
@@ -7,6 +7,15 @@
     <div class="card-header">
         <h1 class="card-title">{% if object %}Modifier l'expédition {{ object.reference }}{% else %}Créer une nouvelle expédition{% endif %}</h1>
     </div>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <span>⚠️</span>
+            <div>
+                <strong>Des erreurs ont été détectées.</strong> Veuillez corriger les champs ci-dessous.
+            </div>
+        </div>
+    {% endif %}
 
     <form method="post">
         {% csrf_token %}

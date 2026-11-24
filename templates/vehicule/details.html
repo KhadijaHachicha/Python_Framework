@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails Véhicule - {{ vehicule.immatriculation }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Véhicule {{ vehicule.immatriculation }}</h1>
+        <span class="badge {% if vehicule.disponible %}badge-publiee{% else %}badge-annulee{% endif %}">
+            {% if vehicule.disponible %}Disponible{% else %}Indisponible{% endif %}
+        </span>
+    </div>
+
+    <div class="details-grid">
+        <div class="detail-item">
+            <div class="detail-label">Immatriculation</div>
+            <div class="detail-value">{{ vehicule.immatriculation }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Type de véhicule</div>
+            <div class="detail-value">{{ vehicule.get_type_vehicule_display }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Capacité maximale</div>
+            <div class="detail-value">{{ vehicule.capacite_kg }} kg</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Entreprise propriétaire</div>
+            <div class="detail-value">{{ vehicule.entreprise.raison_social }}</div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a class="btn btn-primary" href="{% url 'Vehicule:update_vehicule' pk=vehicule.id %}">Modifier le véhicule</a>
+        <a class="btn btn-danger" href="{% url 'Vehicule:delete_vehicule' pk=vehicule.id %}">Supprimer</a>
+        <a class="btn btn-secondary" href="{% url 'Vehicule:liste_classe' %}">Retour à la liste</a>
+    </div>
+</div>
+{% endblock %}

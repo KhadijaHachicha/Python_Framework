@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 480px; margin: 2rem auto;">
+    <div class="card-header">
+        <h1 class="card-title">Connexion</h1>
+    </div>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <span></span>
+            <div>
+                <strong>Identifiants incorrects.</strong> Veuillez vérifier votre nom d'utilisateur et mot de passe.
+            </div>
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Se connecter</button>
+            <a href="{% url 'register' %}" class="btn btn-secondary">Créer un compte</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

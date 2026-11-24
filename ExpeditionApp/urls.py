@@ -1,5 +1,14 @@
 from django.urls import path
-from .views import (home,welcome,listExpeditions,detailExpedition,Liste_expedition,Detail_expedition,Delete_expedition,CreateExpedition,UpdateExpedition,
+from .views import (
+    home,
+    welcome,
+    listExpeditions,
+    detailExpedition,
+    Liste_expedition,
+    Detail_expedition,
+    Delete_expedition,
+    CreateExpedition,
+    UpdateExpedition,
 )
 
 app_name = 'Expedition'

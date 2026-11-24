@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Offres{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Liste des Offres</h1>
+        <a class="btn btn-primary" href="{% url 'Offre:create_offre' %}">+ Nouvelle offre</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Expédition</th>
+                    <th>Transporteur</th>
+                    <th>Prix</th>
+                    <th>Délai</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for offre in list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'Offre:detail_offre' id=offre.id %}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
+                            {{ offre.expedition.reference }}
+                        </a>
+                    </td>
+                    <td>{{ offre.entreprise.raison_social }}</td>
+                    <td><strong>{{ offre.prix }} TND</strong></td>
+                    <td>{{ offre.delai_jours }} jour(s)</td>
+                    <td>
+                        <span class="badge {% if offre.statut == 'a' %}badge-publiee{% elif offre.statut == 'p' %}badge-attribuee{% elif offre.statut == 'r' %}badge-annulee{% else %}badge-terminee{% endif %}">
+                            {{ offre.get_statut_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions-cell">
+                            <a class="btn btn-secondary btn-sm" href="{% url 'Offre:detail_offre' id=offre.id %}">Détails</a>
+                            <a class="btn btn-secondary btn-sm" href="{% url 'Offre:update_offre' pk=offre.id %}">Edit</a>
+                            <a class="btn btn-danger btn-sm" href="{% url 'Offre:delete_offre' pk=offre.id %}">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <p>Aucune offre enregistrée.</p>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

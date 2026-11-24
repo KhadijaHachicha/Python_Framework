@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Véhicules{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Liste des Véhicules</h1>
+        <a class="btn btn-primary" href="{% url 'Vehicule:create_vehicule' %}">+ Nouveau véhicule</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Immatriculation</th>
+                    <th>Type</th>
+                    <th>Capacité (kg)</th>
+                    <th>Disponibilité</th>
+                    <th>Entreprise</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for vehicule in list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'Vehicule:detail_vehicule' id=vehicule.id %}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
+                            {{ vehicule.immatriculation }}
+                        </a>
+                    </td>
+                    <td>{{ vehicule.get_type_vehicule_display }}</td>
+                    <td>{{ vehicule.capacite_kg }} kg</td>
+                    <td>
+                        <span class="badge {% if vehicule.disponible %}badge-publiee{% else %}badge-annulee{% endif %}">
+                            {% if vehicule.disponible %}Disponible{% else %}Indisponible{% endif %}
+                        </span>
+                    </td>
+                    <td>{{ vehicule.entreprise.raison_social }}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <a class="btn btn-secondary btn-sm" href="{% url 'Vehicule:detail_vehicule' id=vehicule.id %}">Détails</a>
+                            <a class="btn btn-secondary btn-sm" href="{% url 'Vehicule:update_vehicule' pk=vehicule.id %}">Edit</a>
+                            <a class="btn btn-danger btn-sm" href="{% url 'Vehicule:delete_vehicule' pk=vehicule.id %}">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <p>Aucun véhicule enregistré.</p>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

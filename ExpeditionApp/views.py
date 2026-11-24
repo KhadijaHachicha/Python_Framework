@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .models import Expedition
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ExpeditionForm
 
 
@@ -50,12 +51,10 @@ class CreateExpedition(CreateView):
     success_url = reverse_lazy('Expedition:liste_classe')
 
 
-class UpdateExpedition(UpdateView):
+class UpdateExpedition(LoginRequiredMixin, UpdateView):
     model = Expedition
     template_name = 'expedition/forms.html'
     form_class = ExpeditionForm
     success_url = reverse_lazy('Expedition:liste_classe')
-
-
 
 Update_expedition = UpdateExpedition

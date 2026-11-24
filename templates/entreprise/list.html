@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Entreprises{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Liste des Entreprises</h1>
+        <a class="btn btn-primary" href="{% url 'Entreprise:create_entreprise' %}">+ Nouvelle entreprise</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Raison Sociale</th>
+                    <th>Matricule Fiscal</th>
+                    <th>Type</th>
+                    <th>Gérant</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for entreprise in list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'Entreprise:detail_entreprise' id=entreprise.id %}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
+                            {{ entreprise.raison_social }}
+                        </a>
+                    </td>
+                    <td>{{ entreprise.matricule_fiscal }}</td>
+                    <td>
+                        <span class="badge {% if entreprise.type_entreprise == 'c' %}badge-publiee{% else %}badge-attribuee{% endif %}">
+                            {{ entreprise.get_type_entreprise_display }}
+                        </span>
+                    </td>
+                    <td>{{ entreprise.gerant.username }}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <a class="btn btn-secondary btn-sm" href="{% url 'Entreprise:detail_entreprise' id=entreprise.id %}">Détails</a>
+                            <a class="btn btn-secondary btn-sm" href="{% url 'Entreprise:update_entreprise' pk=entreprise.id %}">Edit</a>
+                            <a class="btn btn-danger btn-sm" href="{% url 'Entreprise:delete_entreprise' pk=entreprise.id %}">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="empty-state">
+                        <p>Aucune entreprise enregistrée.</p>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

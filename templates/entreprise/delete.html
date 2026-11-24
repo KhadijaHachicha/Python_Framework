@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Supprimer l'Entreprise{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 550px; margin: 2rem auto; border-top: 4px solid var(--danger);">
+    <div class="card-header">
+        <h1 class="card-title" style="color: var(--danger);">Supprimer l'Entreprise</h1>
+    </div>
+
+    <p style="margin-bottom: 1.5rem; font-size: 1.05rem;">
+        Êtes-vous sûr de vouloir supprimer l'entreprise "<strong>{{ entreprise.raison_social }}</strong>" ?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Oui, Supprimer</button>
+            <a href="{% url 'Entreprise:liste_classe' %}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

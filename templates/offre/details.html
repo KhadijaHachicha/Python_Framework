@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails Offre - {{ offre.id }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Offre pour l'expédition {{ offre.expedition.reference }}</h1>
+        <span class="badge {% if offre.statut == 'a' %}badge-publiee{% elif offre.statut == 'p' %}badge-attribuee{% elif offre.statut == 'r' %}badge-annulee{% else %}badge-terminee{% endif %}">
+            {{ offre.get_statut_display }}
+        </span>
+    </div>
+
+    <div class="details-grid">
+        <div class="detail-item">
+            <div class="detail-label">Prix proposé</div>
+            <div class="detail-value" style="color: var(--primary); font-weight: 700;">{{ offre.prix }} TND</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Délai estimé</div>
+            <div class="detail-value">{{ offre.delai_jours }} jour(s)</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Transporteur</div>
+            <div class="detail-value">{{ offre.entreprise.raison_social }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Véhicule assigné</div>
+            <div class="detail-value">{{ offre.vehicule.immatriculation }} ({{ offre.vehicule.get_type_vehicule_display }})</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Date proposition</div>
+            <div class="detail-value">{{ offre.date_proposition }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Statut de l'offre</div>
+            <div class="detail-value">{{ offre.get_statut_display }}</div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a class="btn btn-primary" href="{% url 'Offre:update_offre' pk=offre.id %}">Modifier l'offre</a>
+        <a class="btn btn-danger" href="{% url 'Offre:delete_offre' pk=offre.id %}">Supprimer</a>
+        <a class="btn btn-secondary" href="{% url 'Offre:liste_classe' %}">Retour à la liste</a>
+    </div>
+</div>
+{% endblock %}

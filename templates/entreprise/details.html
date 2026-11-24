@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails Entreprise - {{ entreprise.raison_social }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">{{ entreprise.raison_social }}</h1>
+        <span class="badge {% if entreprise.type_entreprise == 'c' %}badge-publiee{% else %}badge-attribuee{% endif %}">
+            {{ entreprise.get_type_entreprise_display }}
+        </span>
+    </div>
+
+    <div class="details-grid">
+        <div class="detail-item">
+            <div class="detail-label">Matricule Fiscal</div>
+            <div class="detail-value">{{ entreprise.matricule_fiscal }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Type d'entreprise</div>
+            <div class="detail-value">{{ entreprise.get_type_entreprise_display }}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Gérant</div>
+            <div class="detail-value">{{ entreprise.gerant.username }} ({{ entreprise.gerant.email }})</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Téléphone Gérant</div>
+            <div class="detail-value">{{ entreprise.gerant.telephone|default:"Non renseigné" }}</div>
+        </div>
+    </div>
+
+    <div class="detail-item" style="margin-bottom: 1.5rem;">
+        <div class="detail-label">Adresse</div>
+        <div class="detail-value" style="font-size: 0.95rem; white-space: pre-line;">{{ entreprise.adresse }}</div>
+    </div>
+
+    <div class="form-actions">
+        <a class="btn btn-primary" href="{% url 'Entreprise:update_entreprise' pk=entreprise.id %}">Modifier l'entreprise</a>
+        <a class="btn btn-danger" href="{% url 'Entreprise:delete_entreprise' pk=entreprise.id %}">Supprimer</a>
+        <a class="btn btn-secondary" href="{% url 'Entreprise:liste_classe' %}">Retour à la liste</a>
+    </div>
+</div>
+{% endblock %}

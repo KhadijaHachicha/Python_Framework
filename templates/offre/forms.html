@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Modifier l'offre{% else %}Créer une offre{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 680px; margin: 0 auto;">
+    <div class="card-header">
+        <h1 class="card-title">{% if object %}Modifier l'offre #{{ object.id }}{% else %}Créer une nouvelle offre{% endif %}</h1>
+    </div>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <span>⚠️</span>
+            <div>
+                <strong>Des erreurs ont été détectées.</strong> Veuillez corriger les champs ci-dessous.
+            </div>
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'Offre:liste_classe' %}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
